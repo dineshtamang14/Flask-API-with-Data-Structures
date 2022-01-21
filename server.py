@@ -35,7 +35,7 @@ class User(db.Model):
     email = db.Column(db.String(50))
     address = db.Column(db.String(200))
     phone = db.Column(db.String(50))
-    posts = db.relationship("BlogPost")
+    posts = db.relationship("BlogPost", cascade="all, delete")
 
 
 class BlogPost(db.Model):
@@ -122,12 +122,30 @@ def get_all_users_ascending():
 
 @app.route("/user/<int:user_id>", methods=["GET"])
 def get_one_user(user_id):
-    pass
+    users = User.query.all()
+    all_users_ll = linked_list.LinkedList()
+
+    for user in users:
+        all_users_ll.insert_beginning(
+            {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "address": user.address,
+                "phone": user.phone
+            }
+        )
+
+    user = all_users_ll.get_user_by_id(user_id)
+    return jsonify(user), 200
 
 
 @app.route("/user/<int:user_id>", methods=["DELETE"])
 def delete_user(user_id):
-    pass
+    user = User.query.filter_by(id=user_id).first()
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"status": f"successfully delete user with id: {user_id}"}), 200
 
 
 @app.route("/blog_post/<int:user_id>", methods=["POST"])
