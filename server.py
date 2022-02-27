@@ -6,6 +6,7 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from flask_sqlalchemy import SQLAlchemy
 import linked_list
+import hash_table
 
 # appp
 app = Flask(__name__)
