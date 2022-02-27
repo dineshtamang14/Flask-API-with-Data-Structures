@@ -151,7 +151,19 @@ def delete_user(user_id):
 
 @app.route("/blog_post/<int:user_id>", methods=["POST"])
 def create_blog_post(user_id):
-    pass
+    data = request.get_json()
+
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({"message": "user does not exits!"}), 400
+
+    ht = hash_table.HashTable(10)
+    ht.add_key_value("title", data["title"])
+    ht.add_key_value("body", data["body"])
+    ht.add_key_value("date", now)
+    ht.add_key_value("title", user_id)
+
+    ht.print_table()
 
 
 @app.route("/user/<int:user_id>", methods=["GET"])
